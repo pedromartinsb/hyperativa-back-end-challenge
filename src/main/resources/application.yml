@@ -12,6 +12,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
 crypto:
   key: Xy7e9L2nN0Q3QjJ9wF6Kxg==
   init-value: Jz/3k+aYyNf9Fqkq5I1X9w==
