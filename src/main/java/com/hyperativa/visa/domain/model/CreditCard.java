@@ -4,13 +4,12 @@ public class CreditCard {
     private String id;
     private String cardHolder;
     private String encryptedCardNumber;
-    private String expirationData;
+    private String expirationDate;
 
-    public CreditCard(String id, String cardHolder, String encryptedCardNumber, String expirationData) {
-        this.id = id;
+    public CreditCard(String cardHolder, String encryptedCardNumber, String expirationDate) {
         this.cardHolder = cardHolder;
         this.encryptedCardNumber = encryptedCardNumber;
-        this.expirationData = expirationData;
+        this.expirationDate = expirationDate;
     }
 
     public String getId() {
@@ -37,11 +36,11 @@ public class CreditCard {
         this.encryptedCardNumber = encryptedCardNumber;
     }
 
-    public String getExpirationData() {
-        return expirationData;
+    public String getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setExpirationData(String expirationData) {
-        this.expirationData = expirationData;
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }
