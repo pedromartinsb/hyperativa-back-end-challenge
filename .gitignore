@@ -1,0 +1,30 @@
+# Gradle build files
+.gradle/
+build/
+
+# Log files
+*.log
+
+# Spring Boot generated files (if any temporary files are created)
+*.tmp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+# IntelliJ IDEA
+*.iml
+.idea/
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# Other temporary files
+*.swp
