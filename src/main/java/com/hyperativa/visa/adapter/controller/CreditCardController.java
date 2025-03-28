@@ -5,12 +5,14 @@ import com.hyperativa.visa.adapter.response.CreditCardResponse;
 import com.hyperativa.visa.adapter.response.IdentifierResponse;
 import com.hyperativa.visa.application.usecase.FindCardIdentifierUseCase;
 import com.hyperativa.visa.application.usecase.SaveCreditCardUseCase;
+import com.hyperativa.visa.domain.exception.CreditCardNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import static com.hyperativa.visa.adapter.mapper.CreditCardMapper.toResponse;
@@ -30,19 +32,14 @@ public class CreditCardController {
     }
 
     @GetMapping("/identifier")
-    public ResponseEntity<IdentifierResponse> getCardIdentifier(@RequestParam("cardNumber") String cardNumber) {
-        try {
-            Optional<String> optionalResponse = findCardIdentifierUseCase.execute(cardNumber);
-            if (optionalResponse.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            final var response = new IdentifierResponse(optionalResponse.get());
-            return ResponseEntity.ok(response);
-
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<IdentifierResponse> getCardIdentifier(@RequestParam("cardNumber") String cardNumber) throws NoSuchAlgorithmException {
+        Optional<String> optionalResponse = findCardIdentifierUseCase.execute(cardNumber);
+        if (optionalResponse.isEmpty()) {
+            throw new CreditCardNotFoundException("Cartão não encontrado para o número fornecido.");
         }
+
+        final var response = new IdentifierResponse(optionalResponse.get());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
