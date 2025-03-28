@@ -20,4 +20,7 @@ public class CreditCardEntity {
 
     @Column(name = "expiration_date")
     private String expirationDate;
+
+    @Column(name = "card_number_hash")
+    private String cardNumberHash;
 }
