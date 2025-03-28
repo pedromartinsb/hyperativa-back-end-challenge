@@ -2,10 +2,16 @@ package com.hyperativa.visa.infrastructure.repository;
 
 import com.hyperativa.visa.domain.model.CreditCard;
 import com.hyperativa.visa.domain.port.CreditCardRepositoryPort;
+import com.hyperativa.visa.infrastructure.mapper.CreditCardEntityMapper;
 import com.hyperativa.visa.infrastructure.repository.jpa.CreditCardEntity;
 import com.hyperativa.visa.infrastructure.repository.jpa.CreditCardJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+import static com.hyperativa.visa.infrastructure.mapper.CreditCardEntityMapper.toDomain;
+import static com.hyperativa.visa.infrastructure.mapper.CreditCardEntityMapper.toEntity;
 
 @Repository
 public class CreditCardRepositoryImpl implements CreditCardRepositoryPort {
@@ -19,13 +25,14 @@ public class CreditCardRepositoryImpl implements CreditCardRepositoryPort {
 
     @Override
     public CreditCard save(final CreditCard creditCard) {
-        final var entity = new CreditCardEntity();
-        entity.setCardHolder(creditCard.getCardHolder());
-        entity.setEncryptedCardNumber(creditCard.getEncryptedCardNumber());
-        entity.setExpirationDate(creditCard.getExpirationDate());
+        CreditCardEntity entity = toEntity(creditCard);
+        CreditCardEntity savedEntity = creditCardJpaRepository.save(entity);
+        return toDomain(savedEntity);
+    }
 
-        final var savedEntity = creditCardJpaRepository.save(entity);
-        creditCard.setId(savedEntity.getId());
-        return creditCard;
+    @Override
+    public Optional<CreditCard> findByCardNumberHash(final String cardNumberHash) {
+        return creditCardJpaRepository.findByCardNumberHash(cardNumberHash)
+                .map(CreditCardEntityMapper::toDomain);
     }
 }
