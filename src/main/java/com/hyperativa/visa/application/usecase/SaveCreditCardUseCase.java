@@ -13,14 +13,12 @@ public class SaveCreditCardUseCase {
     private final CreditCardRepositoryPort creditCardRepositoryPort;
     private final CryptoService cryptoService;
 
-    public SaveCreditCardUseCase(CreditCardRepositoryPort creditCardRepositoryPort,
-                                 CryptoService cryptoService) {
+    public SaveCreditCardUseCase(CreditCardRepositoryPort creditCardRepositoryPort, CryptoService cryptoService) {
         this.creditCardRepositoryPort = creditCardRepositoryPort;
         this.cryptoService = cryptoService;
     }
 
-    public CreditCard execute(final String cardHolder, final String cardNumber,
-                              final String expirationDate) throws Exception {
+    public CreditCard execute(final String cardHolder, final String cardNumber, final String expirationDate) {
         final var encryptedNumber = cryptoService.encrypt(cardNumber);
         final var cardNumberHash = sha256(cardNumber);
         final var creditCard = new CreditCard(cardHolder, encryptedNumber, expirationDate, cardNumberHash);

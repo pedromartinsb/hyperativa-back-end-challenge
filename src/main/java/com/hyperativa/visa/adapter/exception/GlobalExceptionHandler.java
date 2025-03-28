@@ -36,6 +36,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(IllegalCardRequestFormatException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalCardRequestFormatException(IllegalCardRequestFormatException ex) {
+        ErrorResponse error = new ErrorResponse("Bad Request", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         ex.printStackTrace();

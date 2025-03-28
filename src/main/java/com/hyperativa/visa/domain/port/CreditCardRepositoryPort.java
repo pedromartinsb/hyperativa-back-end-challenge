@@ -6,6 +6,5 @@ import java.util.Optional;
 
 public interface CreditCardRepositoryPort {
     CreditCard save(CreditCard creditCard);
-
     Optional<CreditCard> findByCardNumberHash(String cardNumberHash);
 }
