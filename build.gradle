@@ -23,11 +23,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.4.4'
+	implementation 'com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.5.1'
+	implementation 'org.liquibase:liquibase-core:4.15.0'
 
 	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
-
-	// Adicione a dependência do Liquibase
-	implementation 'org.liquibase:liquibase-core:4.15.0'
 
 	compileOnly 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'

@@ -19,5 +19,24 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
 
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+
 crypto:
   key: Xy7e9L2nN0Q3QjJ9wF6Kxg==
+
+bucket4j:
+  enabled: true
+  debug: true
+  filters:
+    - cache-name: bucket4j-cache
+      url: "/api/.*"
+      http-method: ALL
+      filter-order: 1
+      rate-limits:
+        - capacity: 10
+          time: 60
+          unit: SECONDS
