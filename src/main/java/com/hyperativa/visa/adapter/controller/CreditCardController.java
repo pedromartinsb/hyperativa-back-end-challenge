@@ -7,14 +7,16 @@ import com.hyperativa.visa.application.usecase.FindCardIdentifierUseCase;
 import com.hyperativa.visa.application.usecase.SaveCreditCardUseCase;
 import com.hyperativa.visa.domain.exception.CreditCardNotFoundException;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
+import static com.hyperativa.visa.adapter.mapper.CreditCardMapper.maskCardNumber;
 import static com.hyperativa.visa.adapter.mapper.CreditCardMapper.toResponse;
 import static com.hyperativa.visa.adapter.mapper.TextCreditCardMapper.fromText;
 
@@ -22,66 +24,65 @@ import static com.hyperativa.visa.adapter.mapper.TextCreditCardMapper.fromText;
 @RequestMapping("/cards")
 public class CreditCardController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CreditCardController.class);
     private final SaveCreditCardUseCase saveCreditCardUseCase;
     private final FindCardIdentifierUseCase findCardIdentifierUseCase;
 
-    public CreditCardController(SaveCreditCardUseCase saveCreditCardUseCase,
-                                FindCardIdentifierUseCase findCardIdentifierUseCase) {
+    public CreditCardController(SaveCreditCardUseCase saveCreditCardUseCase, FindCardIdentifierUseCase findCardIdentifierUseCase) {
         this.saveCreditCardUseCase = saveCreditCardUseCase;
         this.findCardIdentifierUseCase = findCardIdentifierUseCase;
     }
 
     @GetMapping("/identifier")
-    public ResponseEntity<IdentifierResponse> getCardIdentifier(@RequestParam("cardNumber") String cardNumber) throws NoSuchAlgorithmException {
+    public ResponseEntity<IdentifierResponse> getCardIdentifier(@RequestParam("cardNumber") String cardNumber) {
+        logger.info("Recebida requisição para buscar identificador do cartão para número: {}", maskCardNumber(cardNumber));
+
         Optional<String> optionalResponse = findCardIdentifierUseCase.execute(cardNumber);
         if (optionalResponse.isEmpty()) {
-            throw new CreditCardNotFoundException("Cartão não encontrado para o número fornecido.");
+            logger.warn("Cartão não encontrado para o número: {}", maskCardNumber(cardNumber));
+            throw new CreditCardNotFoundException("Cartão não encontrado para o número fornecido: " + maskCardNumber(cardNumber));
         }
 
+        logger.info("Cartão encontrado com ID: {}", optionalResponse.get());
         final var response = new IdentifierResponse(optionalResponse.get());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<CreditCardResponse> saveCard(@Valid @RequestBody CreditCardRequest request,
-                                                       UriComponentsBuilder uriBuilder) {
-        try {
-            final var card = saveCreditCardUseCase.execute(
-                    request.cardHolder(),
-                    request.cardNumber(),
-                    request.expirationDate()
-            );
-            final var response = toResponse(card);
-            URI location = uriBuilder
-                    .path("/api/v1/cards/{id}")
-                    .buildAndExpand(response.id())
-                    .toUri();
-            return ResponseEntity.created(location).body(response);
+    public ResponseEntity<CreditCardResponse> saveCard(@Valid @RequestBody CreditCardRequest request, UriComponentsBuilder uriBuilder) {
+        logger.info("Recebida requisição para salvar informações do cartão para número: {}", maskCardNumber(request.cardNumber()));
+        final var card = saveCreditCardUseCase.execute(
+                request.cardHolder(),
+                request.cardNumber(),
+                request.expirationDate()
+        );
+        logger.info("Cartão salvo com ID: {}", card.getId());
 
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        final var response = toResponse(card);
+        URI location = uriBuilder
+                .path("/api/v1/cards/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @PostMapping(consumes = "text/plain", produces = "application/json")
-    public ResponseEntity<CreditCardResponse> saveCardTxt(@RequestBody String body,
-                                                          UriComponentsBuilder uriBuilder) {
-        try {
-            CreditCardRequest request = fromText(body);
-            final var card = saveCreditCardUseCase.execute(
-                    request.cardHolder(),
-                    request.cardNumber(),
-                    request.expirationDate()
-            );
-            CreditCardResponse response = toResponse(card);
-            URI location = uriBuilder
-                    .path("/api/v1/cards/{id}")
-                    .buildAndExpand(response.id())
-                    .toUri();
-            return ResponseEntity.created(location).body(response);
+    public ResponseEntity<CreditCardResponse> saveCardTxt(@RequestBody String body, UriComponentsBuilder uriBuilder) {
+        CreditCardRequest request = fromText(body);
+        logger.info("Recebida requisição para salvar informações do cartão para número via TXT: {}", maskCardNumber(request.cardNumber()));
 
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        final var card = saveCreditCardUseCase.execute(
+                request.cardHolder(),
+                request.cardNumber(),
+                request.expirationDate()
+        );
+        logger.info("Cartão salvo com ID: {}", card.getId());
+
+        CreditCardResponse response = toResponse(card);
+        URI location = uriBuilder
+                .path("/api/v1/cards/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 }

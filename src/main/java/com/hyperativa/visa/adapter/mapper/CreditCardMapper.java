@@ -13,10 +13,10 @@ public class CreditCardMapper {
                 maskCardNumber(creditCard.getEncryptedCardNumber()));
     }
 
-    public static String maskCardNumber(final String encryptedCardNumber) {
-        // Como o número está criptografado, normalmente você não consegue extrair os últimos dígitos.
-        // Em um cenário real, você pode armazenar separadamente os últimos 4 dígitos do cartão para exibição.
-        // Para fins de exemplo, vamos retornar um valor fixo.
-        return "**** **** **** 1234";
+    public static String maskCardNumber(final String cardNumber) {
+        if (cardNumber != null && cardNumber.length() > 4) {
+            return "****" + cardNumber.substring(cardNumber.length() - 4);
+        }
+        return cardNumber;
     }
 }

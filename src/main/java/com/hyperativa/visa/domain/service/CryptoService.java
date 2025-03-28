@@ -1,5 +1,5 @@
 package com.hyperativa.visa.domain.service;
 
 public interface CryptoService {
-    String encrypt(String data) throws Exception;
+    String encrypt(String data);
 }
