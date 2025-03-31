@@ -1,0 +1,208 @@
+{
+	"info": {
+		"_postman_id": "7278cea6-e45a-49fb-864c-7f663d7fa972",
+		"name": "Visa Hyperativa API",
+		"description": "API collection for Visa Hyperativa Backend Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31390653",
+		"_collection_link": "https://galactic-meteor-153690.postman.co/workspace/Team-Workspace~b11c83bb-5c9f-418b-8f67-180bcbb85ba9/collection/31390653-7278cea6-e45a-49fb-864c-7f663d7fa972?action=share&source=collection_link&creator=31390653"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"Test@123\",\n    \"roles\": \"ROLE_USER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Register a new user"
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"Test@123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/sign-in",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"sign-in"
+							]
+						},
+						"description": "Login user and get JWT token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Credit Cards",
+			"item": [
+				{
+					"name": "Create Credit Card via JSON",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJpYXQiOjE3NDMzOTE2NjIsImV4cCI6MTc0MzQ3ODA2Mn0.41kTpS9-kHCvJYzLbTlgpZZwsWvZkwelZoZYGqiVK-c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cardNumber\": \"4532123456789012\",\n    \"cardHolder\": \"John Doe\",\n    \"expirationDate\": \"12/2025\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/credit-cards",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"credit-cards"
+							]
+						},
+						"description": "Create a new credit card"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Credit Card via TXT",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/plain",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "John Doe,4111111111111111,12/2025",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Credit Card by identifier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJuYW1lIjoiam9obl9kb2UiLCJpYXQiOjE3NDMzODMyNDgsImV4cCI6MTc0MzQ2OTY0OH0.RhAL0e0PZ21etrb6zp-mbOAu1AlRpsZpBpvkhQBM7LA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/credit-cards/identifier?cardNumber=4532123456789012",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"credit-cards",
+								"identifier"
+							],
+							"query": [
+								{
+									"key": "cardNumber",
+									"value": "4532123456789012"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "your_jwt_token_here",
+			"type": "string"
+		},
+		{
+			"key": "card_id",
+			"value": "your_card_id_here",
+			"type": "string"
+		}
+	]
+}
