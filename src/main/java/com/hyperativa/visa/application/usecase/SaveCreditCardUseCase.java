@@ -30,10 +30,11 @@ public class SaveCreditCardUseCase {
 
     public CreditCard execute(final String cardHolder, final String cardNumber,
                               final String expirationDate, final HttpServletRequest request) {
-        final var encryptedNumber = cryptoService.encrypt(cardNumber);
-        final var cardNumberHash = sha256(cardNumber);
         final var username = getUsernameByRequestUseCase.execute(request);
         final var user = this.findUserByUsernameUseCase.execute(username);
+        
+        final var encryptedNumber = cryptoService.encrypt(cardNumber);
+        final var cardNumberHash = sha256(cardNumber);
         
         // Create credit card with the managed user entity
         final var creditCard = new CreditCard(cardHolder, encryptedNumber, expirationDate, cardNumberHash, user);

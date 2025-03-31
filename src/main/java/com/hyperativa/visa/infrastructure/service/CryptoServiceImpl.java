@@ -23,6 +23,10 @@ public class CryptoServiceImpl implements CryptoService {
 
     @Override
     public String encrypt(final String data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Data to encrypt cannot be null");
+        }
+
         try {
             byte[] ivBytes = new byte[16];
             SecureRandom secureRandom = new SecureRandom();

@@ -43,7 +43,7 @@ public class UserController {
             );
 
             URI location = uriBuilder
-                    .path("/api/v1/users/{id}")
+                    .path("/users/{id}")
                     .buildAndExpand(response.id())
                     .toUri();
             return ResponseEntity.created(location).body(response);
