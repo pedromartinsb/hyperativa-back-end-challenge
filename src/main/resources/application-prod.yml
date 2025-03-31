@@ -1,0 +1,76 @@
+server:
+  servlet:
+    context-path: /api/v1
+
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:visa_hyperativa}
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root1234}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: false
+        show_sql: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+logging:
+  level:
+    root: WARN
+    com.hyperativa.visa: INFO
+    org.springframework.web: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application-prod.log
+    max-size: 100MB
+    max-history: 30
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+  show-actuator: false
+
+crypto:
+  key: ${CRYPTO_KEY:Xy7e9L2nN0Q3QjJ9wF6Kxg==}
+
+jwt:
+  secret: ${JWT_SECRET:"f4a67c9c102ce8a9719c1e6b9ab54c3c49cff9e78a77c53dee559380abfe615a3f060211120cde1a4beb75901aebc686365e1353bc3470a5cebb5cfd02f951c1253b2ef2dd7dd20b137b1e7cb53ae294c978042b3f636e1264f5a92044cf8a081fa27f93c1a4901d1cfee8767b023993d1cd7c49285dbcbbc67a6a2396335637c1b874beeb2a8f18764eafba5e5808e428dad42568bbe9388e4dab03e27aee395355b99c8bc284d69bb9f7cb4902be6d56cd8f58a3aa5109fd50db815a50c5684c989a53a65f0545d5bab54b39855f5f346a3c149f78e2ac6d2dbacc243bd9b8e9a6180ad6f3f8da1b2e9e4349d5cdd6cd096e0efe44a0737df3ecf534d6e520"}
+  expiration-in-ms: 86400000

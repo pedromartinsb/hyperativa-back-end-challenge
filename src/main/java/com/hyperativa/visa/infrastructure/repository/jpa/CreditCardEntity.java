@@ -23,4 +23,8 @@ public class CreditCardEntity {
 
     @Column(name = "card_number_hash")
     private String cardNumberHash;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 }
