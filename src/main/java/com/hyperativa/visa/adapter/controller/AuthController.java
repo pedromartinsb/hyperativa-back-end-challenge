@@ -32,20 +32,14 @@ public class AuthController {
     @PostMapping("/sign-in")
     public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         logger.info("Tentando autenticar o usuário: {}", loginRequest.username());
-        try {
-            Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
-            final var username = authentication.getName();
-            final var user = new User();
-            user.setUsername(username);
-            final var token = jwtUtils.createToken(user);
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
+        final var username = authentication.getName();
+        final var user = new User();
+        user.setUsername(username);
+        final var token = jwtUtils.createToken(user);
 
-            logger.info("Autenticação realizada com sucesso para: {}", loginRequest.username());
-            return ResponseEntity.ok(new LoginResponse(token));
-
-        } catch (Exception e) {
-            logger.error("Erro ao autenticar o usuário: {}", loginRequest.username(), e);
-            throw e;
-        }
+        logger.info("Autenticação realizada com sucesso para: {}", loginRequest.username());
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 }
