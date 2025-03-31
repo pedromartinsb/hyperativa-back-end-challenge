@@ -1,6 +1,7 @@
 package com.hyperativa.visa.adapter.controller;
 
 import com.hyperativa.visa.adapter.request.CreateUserRequest;
+import com.hyperativa.visa.adapter.response.ErrorResponse;
 import com.hyperativa.visa.adapter.response.UserResponse;
 import com.hyperativa.visa.application.usecase.CreateUserUseCase;
 import jakarta.validation.Valid;
@@ -24,26 +25,30 @@ public class UserController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request, UriComponentsBuilder uriBuilder) {
-        final var user = createUserUseCase.execute(
-                request.username(),
-                request.email(),
-                request.password(),
-                request.roles()
-        );
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest request, UriComponentsBuilder uriBuilder) {
+        try {
+            final var user = createUserUseCase.execute(
+                    request.username(),
+                    request.email(),
+                    request.password(),
+                    request.roles()
+            );
 
-        final var response = new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.isEnabled(),
-                user.getRoles()
-        );
+            final var response = new UserResponse(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.isEnabled(),
+                    user.getRoles()
+            );
 
-        URI location = uriBuilder
-                .path("/api/v1/users/{id}")
-                .buildAndExpand(response.id())
-                .toUri();
-        return ResponseEntity.created(location).body(response);
+            URI location = uriBuilder
+                    .path("/api/v1/users/{id}")
+                    .buildAndExpand(response.id())
+                    .toUri();
+            return ResponseEntity.created(location).body(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
     }
 }

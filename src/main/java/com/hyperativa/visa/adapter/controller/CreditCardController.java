@@ -6,6 +6,7 @@ import com.hyperativa.visa.adapter.response.IdentifierResponse;
 import com.hyperativa.visa.application.usecase.FindCardIdentifierUseCase;
 import com.hyperativa.visa.application.usecase.SaveCreditCardUseCase;
 import com.hyperativa.visa.domain.exception.CreditCardNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ import static com.hyperativa.visa.adapter.mapper.CreditCardMapper.toResponse;
 import static com.hyperativa.visa.adapter.mapper.TextCreditCardMapper.fromText;
 
 @RestController
-@RequestMapping("/cards")
+@RequestMapping("/credit-cards")
 public class CreditCardController {
 
     private static final Logger logger = LoggerFactory.getLogger(CreditCardController.class);
@@ -49,12 +50,15 @@ public class CreditCardController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<CreditCardResponse> saveCard(@Valid @RequestBody CreditCardRequest request, UriComponentsBuilder uriBuilder) {
-        logger.info("Recebida requisição para salvar informações do cartão para número: {}", maskCardNumber(request.cardNumber()));
+    public ResponseEntity<CreditCardResponse> saveCard(@Valid @RequestBody CreditCardRequest creditCardRequest,
+                                                       UriComponentsBuilder uriBuilder,
+                                                       HttpServletRequest request) {
+        logger.info("Recebida requisição para salvar informações do cartão para número: {}", maskCardNumber(creditCardRequest.cardNumber()));
         final var card = saveCreditCardUseCase.execute(
-                request.cardHolder(),
-                request.cardNumber(),
-                request.expirationDate()
+                creditCardRequest.cardHolder(),
+                creditCardRequest.cardNumber(),
+                creditCardRequest.expirationDate(),
+                request
         );
         logger.info("Cartão salvo com ID: {}", card.getId());
 
@@ -67,14 +71,17 @@ public class CreditCardController {
     }
 
     @PostMapping(consumes = "text/plain", produces = "application/json")
-    public ResponseEntity<CreditCardResponse> saveCardTxt(@RequestBody String body, UriComponentsBuilder uriBuilder) {
-        CreditCardRequest request = fromText(body);
-        logger.info("Recebida requisição para salvar informações do cartão para número via TXT: {}", maskCardNumber(request.cardNumber()));
+    public ResponseEntity<CreditCardResponse> saveCardTxt(@RequestBody String body,
+                                                          UriComponentsBuilder uriBuilder,
+                                                          HttpServletRequest request) {
+        CreditCardRequest creditCardRequest = fromText(body);
+        logger.info("Recebida requisição para salvar informações do cartão para número via TXT: {}", maskCardNumber(creditCardRequest.cardNumber()));
 
         final var card = saveCreditCardUseCase.execute(
-                request.cardHolder(),
-                request.cardNumber(),
-                request.expirationDate()
+                creditCardRequest.cardHolder(),
+                creditCardRequest.cardNumber(),
+                creditCardRequest.expirationDate(),
+                request
         );
         logger.info("Cartão salvo com ID: {}", card.getId());
 

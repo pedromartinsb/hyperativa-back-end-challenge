@@ -6,12 +6,14 @@ public class CreditCard {
     private String encryptedCardNumber;
     private String expirationDate;
     private String cardNumberHash;
+    private User user;
 
-    public CreditCard(String cardHolder, String encryptedCardNumber, String expirationDate, String cardNumberHash) {
+    public CreditCard(String cardHolder, String encryptedCardNumber, String expirationDate, String cardNumberHash, User user) {
         this.cardHolder = cardHolder;
         this.encryptedCardNumber = encryptedCardNumber;
         this.expirationDate = expirationDate;
         this.cardNumberHash = cardNumberHash;
+        this.user = user;
     }
 
     public String getId() {
@@ -52,5 +54,13 @@ public class CreditCard {
 
     public void setCardNumberHash(String cardNumberHash) {
         this.cardNumberHash = cardNumberHash;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
