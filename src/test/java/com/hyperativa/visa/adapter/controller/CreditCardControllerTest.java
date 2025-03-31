@@ -145,7 +145,7 @@ class CreditCardControllerTest {
             .andExpect(jsonPath("$.maskedCardNumber").exists())
             .andReturn();
 
-        String responseBody = result.getResponse().getContentAsString();
+        String responseBody = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("Response body: " + responseBody);
         System.out.println("Location header: " + result.getResponse().getHeader("Location"));
 
@@ -187,7 +187,7 @@ class CreditCardControllerTest {
             .andExpect(jsonPath("$.maskedCardNumber").exists())
             .andReturn();
 
-        String responseBody = result.getResponse().getContentAsString();
+        String responseBody = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("Response body: " + responseBody);
         System.out.println("Location header: " + result.getResponse().getHeader("Location"));
 
@@ -214,7 +214,7 @@ class CreditCardControllerTest {
             .andExpect(status().isBadRequest())
             .andReturn();
 
-        String responseBody = result.getResponse().getContentAsString();
+        String responseBody = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("Error response: " + responseBody);
     }
 
@@ -234,7 +234,7 @@ class CreditCardControllerTest {
             .andExpect(status().isBadRequest())
             .andReturn();
 
-        String responseBody = result.getResponse().getContentAsString();
+        String responseBody = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("Error response: " + responseBody);
     }
 } 

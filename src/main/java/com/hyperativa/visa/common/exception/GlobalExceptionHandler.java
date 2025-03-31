@@ -2,7 +2,6 @@ package com.hyperativa.visa.common.exception;
 
 import com.hyperativa.visa.adapter.exception.IllegalCardRequestFormatException;
 import com.hyperativa.visa.common.response.ErrorResponse;
-import com.hyperativa.visa.domain.exception.CreditCardNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
