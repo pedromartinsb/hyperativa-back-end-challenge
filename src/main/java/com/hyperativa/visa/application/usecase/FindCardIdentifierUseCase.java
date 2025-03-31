@@ -18,6 +18,9 @@ public class FindCardIdentifierUseCase {
     }
 
     public Optional<String> execute(final String cardNumber) {
+        if (cardNumber == null) {
+            return Optional.empty();
+        }
         final var cardNumberHash = sha256(cardNumber);
         final var optionalCreditCard = creditCardRepositoryPort.findByCardNumberHash(cardNumberHash);
         return optionalCreditCard.map(CreditCard::getId);
