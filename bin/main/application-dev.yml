@@ -1,38 +1,37 @@
+server:
+  servlet:
+    context-path: /api/v1
+
 spring:
-  profiles:
-    active: dev
-    group:
-      dev: dev
-      prod: prod
   datasource:
+    url: jdbc:mysql://localhost:3306/visa_hyperativa
+    username: root
+    password: root1234
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
       idle-timeout: 300000
       connection-timeout: 20000
       max-lifetime: 1200000
+
   jpa:
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-        generate_statistics: true
-        jdbc:
-          batch_size: 30
-          batch_versioned_data: true
-        order_inserts: true
-        order_updates: true
-        connection:
-          provider_disables_autocommit: true
+        format_sql: true
+        show_sql: true
+
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+
   cache:
     cache-names:
       - rate-limit-buckets
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
-
-server:
-  servlet:
-    context-path: /api/v1
 
 management:
   endpoints:
@@ -41,33 +40,39 @@ management:
         include: health,info,metrics,prometheus
   endpoint:
     health:
+      show-details: always
       probes:
         enabled: true
-    metrics:
-      enabled: true
-      distribution:
-        percentiles-histogram:
-          http.server.requests: true
-        sla:
-          http.server.requests: 10ms, 50ms, 100ms, 200ms, 500ms
   info:
     env:
       enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-    export:
-      prometheus:
-        enabled: true
-        step: 1m
-        descriptions: true
 
 logging:
+  level:
+    root: INFO
+    com.hyperativa.visa: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application-dev.log
+    max-size: 10MB
+    max-history: 7
 
 springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    disable-swagger-default-url: true
+    urls[0]:
+      name: API V1
+      url: /v3/api-docs
+  show-actuator: true
   packages-to-scan: com.hyperativa.visa
   paths-to-match: /**
   use-management-port: false

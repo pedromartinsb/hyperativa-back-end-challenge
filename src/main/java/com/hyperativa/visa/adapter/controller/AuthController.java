@@ -3,7 +3,7 @@ package com.hyperativa.visa.adapter.controller;
 import com.hyperativa.visa.adapter.request.LoginRequest;
 import com.hyperativa.visa.adapter.response.LoginResponse;
 import com.hyperativa.visa.domain.model.User;
-import com.hyperativa.visa.infrastructure.security.JwtUtils;
+import com.hyperativa.visa.config.security.JwtUtils;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

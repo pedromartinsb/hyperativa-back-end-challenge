@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.25.xsd">
+
+    <!-- Add indexes for better query performance -->
+    <changeSet id="001-add-indexes" author="liquibase">
+        <!-- Add indexes for frequently queried columns in users table -->
+        <createIndex tableName="users" indexName="idx_users_email">
+            <column name="email"/>
+        </createIndex>
+
+        <createIndex tableName="users" indexName="idx_users_username">
+            <column name="username"/>
+        </createIndex>
+
+        <!-- Add indexes for credit_cards table -->
+        <createIndex tableName="credit_cards" indexName="idx_credit_cards_user_id">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="credit_cards" indexName="idx_credit_cards_card_number_hash">
+            <column name="card_number_hash"/>
+        </createIndex>
+
+        <!-- Add composite index for user's credit cards -->
+        <createIndex tableName="credit_cards" indexName="idx_credit_cards_user_expiration">
+            <column name="user_id"/>
+            <column name="expiration_date"/>
+        </createIndex>
+
+        <!-- Add index for card holder name searches -->
+        <createIndex tableName="credit_cards" indexName="idx_credit_cards_card_holder">
+            <column name="card_holder"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog> 
